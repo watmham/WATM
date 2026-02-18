@@ -18,8 +18,7 @@
             color: #333;
             line-height: 1.8;
             font-size: 16px;
-
-            /* 这里就是你的 bg2.png，绝对路径，一定显示 */
+            /* bg2.png 绝对路径 */
             background: url("https://raw.githubusercontent.com/watmham/WATM/main/images/bg2.png") no-repeat center center;
             background-size: cover;
             background-attachment: fixed;
@@ -70,26 +69,160 @@
             color: #666;
         }
 
+        /* 新增：统一h2样式 */
+        h2 {
+            font-size: 20px;
+            margin: 30px 0 15px;
+            color: #2c3e50;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
         .station-list {
             position: relative;
             z-index: 1;
         }
+        /* 提交表单样式 */
+        .submit-form {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .submit-form h2 {
+            margin-bottom: 15px;
+            margin-top: 0;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            resize: vertical;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .submit-btn:hover {
+            background: #2980b9;
+        }
+        /* 提示消息 */
+        .message {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        /* 动态提交的电台项样式 */
         .station-item {
             background: rgba(255,255,255,0.7);
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 8px;
             border: 1px solid #ddd;
+            transition: transform 0.2s ease;
+        }
+        .station-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .station-item strong {
             font-size: 18px;
             color: #222;
+            display: block;
+            margin-bottom: 5px;
         }
-        .station-item p {
-            margin-top: 5px;
-            color: #333;
+        .station-item .info {
+            color: #555;
+            margin-bottom: 5px;
         }
-
+        .station-item .time {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+            display: block;
+        }
+        /* 清空按钮 */
+        .clear-btn {
+            margin: 20px auto 0;
+            display: block;
+            padding: 8px 20px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .clear-btn:hover {
+            background: #c0392b;
+        }
+        /* 静态呼号列表样式 */
+        ul.station-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        ul.station-list li {
+            background: rgba(255,255,255,0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+        }
+        /* 说明文本样式 */
+        .note {
+            text-align: center;
+            margin: 20px 0 30px;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+            z-index: 1;
+        }
         .copyright {
             text-align: center;
             margin-top: 50px;
@@ -110,8 +243,46 @@
         <span class="en">Recently Active Stations in Tai'an</span>
     </h1>
 
-    <!-- 呼号列表 -->
-    <h2>电台呼号 | Station Call Signs</h2>
+    <!-- 提交表单区域 -->
+    <div class="submit-form">
+        <h2>提交你的电台信息 | Submit Your Station Info</h2>
+        <div class="form-group">
+            <label for="callsign">电台呼号 * | Station Call Sign *</label>
+            <input type="text" id="callsign" placeholder="例如：BG4LZN、BA4IHB" required>
+        </div>
+        <div class="form-group">
+            <label for="location">位置 | Location</label>
+            <input type="text" id="location" placeholder="例如：泰安市泰山区、新泰市">
+        </div>
+        <div class="form-group">
+            <label for="modes">通联模式 | Communication Modes</label>
+            <input type="text" id="modes" placeholder="例如：FM/SSB/CW/FT8、仅FM">
+        </div>
+        <div class="form-group">
+            <label for="notes">备注 | Notes</label>
+            <textarea id="notes" rows="3" placeholder="可选：发射频率、设备、近期活动等"></textarea>
+        </div>
+        <button class="submit-btn" onclick="submitStation()">提交 | Submit</button>
+        <div class="message" id="message"></div>
+    </div>
+    
+    <!-- 动态提交的电台列表 -->
+    <div class="station-list">
+        <h2>用户提交的发射电台 | User-Submitted Active Stations</h2>
+        <div id="stationContainer">
+            <!-- 无提交数据时显示默认示例 -->
+            <div class="station-item">
+                <strong>BG4LZN</strong>
+                <div class="info">位置：泰安市</div>
+                <div class="info">模式：FM / SSB / CW / FT8</div>
+                <span class="time">默认示例 | Default Example</span>
+            </div>
+        </div>
+        <button class="clear-btn" onclick="clearAllStations()">清空提交列表 | Clear Submitted List</button>
+    </div>
+
+    <!-- 静态呼号列表 -->
+    <h2>泰安在册电台呼号 | Registered Station Call Signs in Tai'an</h2>
     <ul class="station-list">
         <li>BA4IHB</li>
         <li>BA4III</li>
@@ -155,7 +326,111 @@
 
     <!-- 版权声明 -->
     <div class="copyright">
-        © 2026 WATM 通联泰安全模式奖 BG4LZN| 联系邮箱：<a href="mailto:watmham@outlook.com">watmham@outlook.com   </a>
+        © 2026 WATM 通联泰安全模式奖 BG4LZN | 联系邮箱：<a href="mailto:watmham@outlook.com">watmham@outlook.com</a>
     </div>
+
+    <!-- 核心功能JS -->
+    <script>
+        // 页面加载时读取本地存储的电台数据
+        window.onload = function() {
+            loadStations();
+        };
+
+        // 提交电台信息
+        function submitStation() {
+            const callsign = document.getElementById('callsign').value.trim();
+            const location = document.getElementById('location').value.trim() || "泰安市（未指定具体区域）";
+            const modes = document.getElementById('modes').value.trim() || "未填写";
+            const notes = document.getElementById('notes').value.trim() || "无";
+            const message = document.getElementById('message');
+
+            // 验证必填项
+            if (!callsign) {
+                showMessage("请填写电台呼号！| Please fill in call sign!", "error");
+                return;
+            }
+
+            // 创建电台对象
+            const station = {
+                callsign: callsign,
+                location: location,
+                modes: modes,
+                notes: notes,
+                time: new Date().toLocaleString('zh-CN')
+            };
+
+            // 读取+保存本地数据
+            let stations = JSON.parse(localStorage.getItem('watmStations')) || [];
+            stations.unshift(station);
+            localStorage.setItem('watmStations', JSON.stringify(stations));
+
+            // 清空表单+提示+刷新列表
+            document.getElementById('callsign').value = "";
+            document.getElementById('location').value = "";
+            document.getElementById('modes').value = "";
+            document.getElementById('notes').value = "";
+            showMessage("提交成功！| Submit Success!", "success");
+            loadStations();
+
+            // 3秒隐藏提示
+            setTimeout(() => {
+                message.style.display = "none";
+            }, 3000);
+        }
+
+        // 加载电台列表（仅显示用户提交的）
+        function loadStations() {
+            const localStations = JSON.parse(localStorage.getItem('watmStations')) || [];
+            const container = document.getElementById('stationContainer');
+            
+            // 清空容器
+            container.innerHTML = "";
+
+            // 显示本地提交的电台
+            if (localStations.length > 0) {
+                localStations.forEach(station => {
+                    const item = document.createElement('div');
+                    item.className = 'station-item';
+                    item.innerHTML = `
+                        <strong>${station.callsign}</strong>
+                        <div class="info">位置：${station.location}</div>
+                        <div class="info">模式：${station.modes}</div>
+                        <div class="info">备注：${station.notes}</div>
+                        <span class="time">提交时间：${station.time}</span>
+                    `;
+                    container.appendChild(item);
+                });
+            } else {
+                // 无本地数据时显示默认示例
+                container.innerHTML = `
+                    <div class="station-item">
+                        <strong>BG4LZN</strong>
+                        <div class="info">位置：泰安市</div>
+                        <div class="info">模式：FM / SSB / CW / FT8</div>
+                        <span class="time">默认示例 | Default Example</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 清空列表
+        function clearAllStations() {
+            if (confirm("确定要清空所有用户提交的电台信息吗？| Are you sure to clear all submitted stations?")) {
+                localStorage.removeItem('watmStations');
+                loadStations();
+                showMessage("列表已清空 | List cleared!", "success");
+                setTimeout(() => {
+                    document.getElementById('message').style.display = "none";
+                }, 2000);
+            }
+        }
+
+        // 显示提示消息
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type}`;
+        }
+    </script>
 </body>
 </html>
