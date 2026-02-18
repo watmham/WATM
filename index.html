@@ -1,131 +1,287 @@
 <!DOCTYPE html>
- <html lang="zh-CN">
-  <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WATM 通联泰安全模式奖</title>
-<style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
-    body{max-width:1000px;margin:0 auto;padding:40px 20px;background:url(https://raw.githubusercontent.com/watmham/WATM/main/images/bg2.png) no-repeat center center;background-size:cover;background-attachment:fixed;color:#333;line-height:1.8;font-size:16px;position:relative;z-index:0}
-    body::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,0.85);z-index:-1}
-
-/* 头部：标题 + 登录注册 */
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;flex-wrap:wrap;gap:10px}
-.title{font-size:26px;font-weight:bold;color:#2c3e50}
-.title .en{font-size:16px;color:#666;display:block}
-.auth{display:flex;gap:8px}
-.btn{padding:6px 14px;border:none;border-radius:4px;color:#fff;font-size:14px;cursor:pointer}
-.btn-login{background:#3498db}
-.btn-register{background:#2ecc71}
-.btn-logout{background:#e74c3c}
-.login-status{color:#27ae60;font-weight:bold;font-size:14px}
-
-/* 三个大按钮（跟你原来完全一样） */
-.menu{display:flex;flex-direction:column;gap:16px;margin:60px 0;align-items:center}
-.menu a{display:block;width:260px;padding:18px 0;background:#fff;border:1px solid #ddd;border-radius:8px;text-align:center;text-decoration:none;color:#2c3e50;font-size:20px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
-.menu a:hover{background:#f5f5f5}
-
-/* 弹窗 */
-.mask{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;z-index:999}
-.mask.show{display:flex}
-.modal{background:#fff;padding:25px;border-radius:8px;width:90%;max-width:360px}
-.modal h3{text-align:center;margin-bottom:15px}
-.modal .item{margin-bottom:12px}
-.modal label{display:block;margin-bottom:4px;font-weight:bold}
-.modal input{width:100%;padding:8px;border:1px solid #ccc;border-radius:4px}
-.modal .subbtn{width:100%;padding:10px;background:#3498db;color:#fff;border:none;border-radius:4px;margin-top:8px}
-.modal .subbtn.reg{background:#2ecc71}
-.msg{margin-top:8px;text-align:center;font-size:14px;display:none}
-.msg.success{color:green}
-.msg.error{color:red}
-.close{float:right;cursor:pointer;font-size:20px;color:#999}
-
-.copyright{text-align:center;margin-top:60px;font-size:14px;color:#666}
-</style>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WATM 通联泰安全模式奖 | Worked All Tai'an Modes Award</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif;
+        }
+        body {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+            color: #333;
+            line-height: 1.8;
+            /* 关键修复：使用GitHub Pages的Raw CDN地址（不是blob/仓库地址） */
+            background: url("https://raw.githubusercontent.com/watmham/WATM/main/images/bg2.png") no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+            background-color: #f8f8f8;
+            position: relative;
+        }
+        /* 遮罩确保文字清晰 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #666;
+        }
+        h1 .en {
+            font-size: 22px;
+            display: block;
+            margin-top: 10px;
+            font-weight: normal;
+            color: #666;
+        }
+        .intro {
+            font-size: 18px;
+            margin-bottom: 50px;
+        }
+        .btn-group {
+            margin: 20px 0;
+        }
+        .nav-btn, .download-btn {
+            display: inline-block;
+            padding: 12px 35px;
+            margin: 10px 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        .nav-btn {
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            color: #000;
+        }
+        .download-btn {
+            background: #3498db;
+            border: 1px solid #2980b9;
+            color: #fff;
+            font-weight: bold;
+        }
+        .nav-btn:hover, .download-btn:hover {
+            background: #eee;
+            text-decoration: underline;
+        }
+        .download-tip {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+        .copyright {
+            margin-top: 80px;
+            font-size: 14px;
+            color: #666;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
+    <h1>
+        通联泰安全模式奖
+        <span class="en">Worked All Tai'an Modes Award (WATM)</span>
+    </h1>
 
-<div class="header">
-  <div class="title">
-    WATM 通联泰安全模式奖
-    <span class="en">Tai'an All-Mode Award</span>
-  </div>
-  <div class="auth">
-    <span class="login-status" id="status"></span>
-    <button class="btn btn-login" id="loginBtn">登录</button>
-    <button class="btn btn-register" id="regBtn">注册</button>
-    <button class="btn btn-logout" id="logoutBtn" style="display:none" onclick="logout()">登出</button>
-  </div>
-</div>
+    <div class="intro">
+        <p>为泰安业余无线电爱好者设立的专属通联奖项</p>
+        <p class="en">Exclusive communication award for Tai'an amateur radio enthusiasts</p>
+    </div>
 
-<!-- 👇 这里就是你原来的 3 个按钮，链接、文字完全正确！！！ -->
-<div class="menu">
-  <a href="rules.html">活动规则</a>
-  <a href="stations.html">发射电台</a>
-  <a href="apply.html">申请奖项</a>
-</div>
+    <div class="btn-group">
+        <a href="https://raw.githubusercontent.com/WATM-Award/WATM/refs/heads/main/WATM%E9%80%9A%E8%81%94%E6%B3%B0%E5%AE%89%E5%85%A8%E6%A8%A1%E5%BC%8F%E5%A5%96%E7%94%B3%E8%AF%B7%E8%A1%A8.xlsx" target="_blank" download class="download-btn">
+            下载申请表 | Download Form
+        </a>
+        <a href="./rules/" class="nav-btn">
+            申请规则 | Application Rules
+        </a>
+    </div>
 
-<!-- 登录弹窗 -->
-<div class="mask" id="loginMask">
-  <div class="modal">
-    <span class="close" onclick="closeMask()">&times;</span>
-    <h3>登录</h3>
-    <div class="item"><label>用户名</label><input id="loginUser"></div>
-    <div class="item"><label>密码</label><input type="password" id="loginPwd"></div>
-    <button class="subbtn" onclick="doLogin()">登录</button>
-    <div class="msg" id="loginMsg"></div>
-  </div>
-</div>
+    <div class="download-tip">
+        <p>提示：申请表为XLSX格式，填写后发送至 watmham@outlook.com</p>
+        <p class="en">Tip: The application form is in XLSX format, send it to watmham@outlook.com after filling</p>
+    </div>
 
-<!-- 注册弹窗 -->
-<div class="mask" id="regMask">
-  <div class="modal">
-    <span class="close" onclick="closeMask()">&times;</span>
-    <h3>注册</h3>
-    <div class="item"><label>用户名</label><input id="regUser"></div>
-    <div class="item"><label>密码</label><input type="password" id="regPwd"></div>
-    <button class="subbtn reg" onclick="doReg()">注册</button>
-    <div class="msg" id="regMsg"></div>
-  </div>
-</div>
+    <div class="copyright">
+        © 2026 WATM | 联系邮箱：<a href="mailto:watmham@outlook.com">watmham@outlook.com</a>
+    </div>
+ <script>
+        // 全局变量：当前登录用户
+        let currentUser = null;
 
-<div class="copyright">© 2026 WATM 通联泰安全模式奖 BG4LZN</div>
+        // 页面加载初始化
+        window.onload = function() {
+            checkLoginStatus();
+            // 绑定弹窗按钮事件
+            document.getElementById('login-btn').addEventListener('click', () => openModal('login-modal'));
+            document.getElementById('register-btn').addEventListener('click', () => openModal('register-modal'));
+        };
 
-<script>
-let user = null;
-window.onload = () => {
-  user = localStorage.getItem('watmUser');
-  if(user) updateStatus();
-  document.getElementById('loginBtn').onclick = () => show('loginMask');
-  document.getElementById('regBtn').onclick = () => show('regMask');
-}
-function show(id){document.getElementById(id).classList.add('show')}
-function closeMask(){document.querySelectorAll('.mask').forEach(m=>m.classList.remove('show'))}
-function updateStatus(){
-  document.getElementById('status').innerText = user ? `已登录：${user}` : '';
-  document.getElementById('loginBtn').style.display = user ? 'none' : 'inline-block';
-  document.getElementById('regBtn').style.display = user ? 'none' : 'inline-block';
-  document.getElementById('logoutBtn').style.display = user ? 'inline-block' : 'none';
-}
-function logout(){localStorage.removeItem('watmUser');user=null;updateStatus()}
+        // ========== 弹窗控制 ==========
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            // 清空表单和提示
+            if (modalId === 'login-modal') {
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                document.getElementById('login-message').style.display = 'none';
+            } else if (modalId === 'register-modal') {
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-password').value = '';
+                document.getElementById('reg-message').style.display = 'none';
+            }
+        }
 
-function doReg(){
-  let u = document.getElementById('regUser').value.trim();
-  let p = document.getElementById('regPwd').value.trim();
-  if(!u||!p){showMsg('regMsg','不能为空','error');return}
-  let list = JSON.parse(localStorage.getItem('users'))||[];
-  if(list.some(x=>x.user===u)){showMsg('regMsg','用户名已存在','error');return}
-  list.push({user,p});localStorage.setItem('users',JSON.stringify(list));
-  showMsg('regMsg','注册成功','success');setTimeout(closeMask,1000)
-}
-function doLogin(){
-  let u = document.getElementById('loginUser').value.trim();
-  let p = document.getElementById('loginPwd').value.trim();
-  let list = JSON.parse(localStorage.getItem('users'))||[];
-  if(!list.some(x=>x.user===u&&x.p===p)){showMsg('loginMsg','用户名或密码错误','error');return}
-  user=u;localStorage.setItem('watmUser',u);updateStatus();closeMask()
-}
-function showMsg(id,t,c){let m=document.getElementById(id);m.innerText=t;m.className='msg '+c;m.style.display='block'}
-</script>
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // 点击遮罩关闭弹窗
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-mask')) {
+                event.target.classList.remove('show');
+            }
+        };
+
+        // ========== 注册/登录核心功能 ==========
+        // 注册功能
+        function register() {
+            const username = document.getElementById('reg-username').value.trim();
+            const password = document.getElementById('reg-password').value.trim();
+            const regMessage = document.getElementById('reg-message');
+
+            // 验证
+            if (!username || !password) {
+                showMessage(regMessage, "用户名和密码不能为空！| Username/password cannot be empty!", "error");
+                return;
+            }
+            if (password.length < 6) {
+                showMessage(regMessage, "密码不少于6位！| Password must be at least 6 characters!", "error");
+                return;
+            }
+
+            // 读取现有用户
+            let users = JSON.parse(localStorage.getItem('watmUsers')) || [];
+            // 检查用户名是否已存在
+            const userExists = users.some(user => user.username === username);
+            if (userExists) {
+                showMessage(regMessage, "用户名已存在！| Username already exists!", "error");
+                return;
+            }
+
+            // 添加新用户
+            users.push({ username, password });
+            localStorage.setItem('watmUsers', JSON.stringify(users));
+
+            // 提示+关闭弹窗
+            showMessage(regMessage, "注册成功！请登录 | Register success! Please login!", "success");
+            setTimeout(() => {
+                closeModal('register-modal');
+                openModal('login-modal');
+            }, 1500);
+        }
+
+        // 登录功能
+        function login() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const loginMessage = document.getElementById('login-message');
+
+            // 验证
+            if (!username || !password) {
+                showMessage(loginMessage, "用户名和密码不能为空！| Username/password cannot be empty!", "error");
+                return;
+            }
+
+            // 读取用户列表
+            let users = JSON.parse(localStorage.getItem('watmUsers')) || [];
+            // 验证用户
+            const user = users.find(u => u.username === username && u.password === password);
+            if (!user) {
+                showMessage(loginMessage, "用户名或密码错误！| Wrong username/password!", "error");
+                return;
+            }
+
+            // 登录成功：保存登录状态
+            currentUser = username;
+            localStorage.setItem('watmCurrentUser', username);
+            
+            // 更新页面状态+关闭弹窗
+            updateLoginStatus();
+            closeModal('login-modal');
+            showMessage(loginMessage, "登录成功！| Login success!", "success");
+        }
+
+        // 登出功能
+        function logout() {
+            // 清除登录状态
+            localStorage.removeItem('watmCurrentUser');
+            currentUser = null;
+            // 更新页面状态
+            updateLoginStatus();
+            // 提示
+            const loginStatus = document.getElementById('login-status');
+            loginStatus.textContent = "已登出 | Logged out";
+            setTimeout(() => loginStatus.textContent = "", 2000);
+        }
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const savedUser = localStorage.getItem('watmCurrentUser');
+            if (savedUser) {
+                currentUser = savedUser;
+                updateLoginStatus();
+            }
+        }
+
+        // 更新登录状态UI
+        function updateLoginStatus() {
+            const loginStatus = document.getElementById('login-status');
+            const loginBtn = document.getElementById('login-btn');
+            const registerBtn = document.getElementById('register-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            if (currentUser) {
+                // 已登录
+                loginStatus.textContent = `当前登录：${currentUser}`;
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+            } else {
+                // 未登录
+                loginStatus.textContent = "";
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+            }
+        }
+
+        // 通用提示消息函数
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type}`;
+        }
+    </script>
 </body>
 </html>
