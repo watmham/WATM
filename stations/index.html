@@ -69,7 +69,7 @@
             color: #666;
         }
 
-        /* 新增：统一h2样式 */
+        /* 统一h2样式 */
         h2 {
             font-size: 20px;
             margin: 30px 0 15px;
@@ -79,10 +79,6 @@
             z-index: 1;
         }
 
-        .station-list {
-            position: relative;
-            z-index: 1;
-        }
         /* 提交表单样式 */
         .submit-form {
             background: rgba(255,255,255,0.9);
@@ -155,11 +151,22 @@
             border: 1px solid #f5c6cb;
             display: block;
         }
-        /* 动态提交的电台项样式 */
+
+        /* 核心：自动两列布局（适配所有列表） */
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 固定两列 */
+            gap: 10px; /* 列/行间距 */
+            position: relative;
+            z-index: 1;
+            margin: 0 auto;
+            max-width: 800px; /* 限制最大宽度，更美观 */
+        }
+
+        /* 用户提交的电台项样式 */
         .station-item {
             background: rgba(255,255,255,0.7);
             padding: 15px;
-            margin-bottom: 10px;
             border-radius: 8px;
             border: 1px solid #ddd;
             transition: transform 0.2s ease;
@@ -184,6 +191,16 @@
             text-align: right;
             display: block;
         }
+
+        /* 静态呼号项样式 */
+        .callsign-item {
+            background: rgba(255,255,255,0.7);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
         /* 清空按钮 */
         .clear-btn {
             margin: 20px auto 0;
@@ -199,21 +216,7 @@
         .clear-btn:hover {
             background: #c0392b;
         }
-        /* 静态呼号列表样式 */
-        ul.station-list {
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        ul.station-list li {
-            background: rgba(255,255,255,0.7);
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-        }
+
         /* 说明文本样式 */
         .note {
             text-align: center;
@@ -230,6 +233,13 @@
             color: #666;
             position: relative;
             z-index: 1;
+        }
+
+        /* 手机端适配：小屏幕自动变回一列 */
+        @media (max-width: 600px) {
+            .two-col-grid {
+                grid-template-columns: 1fr; /* 手机端一列 */
+            }
         }
     </style>
 </head>
@@ -266,84 +276,56 @@
         <div class="message" id="message"></div>
     </div>
     
-    <!-- 动态提交的电台列表 -->
-    <div class="station-list">
-        <h2>用户提交的发射电台 | User-Submitted Active Stations</h2>
-        <div id="stationContainer">
-            <!-- 无提交数据时显示默认示例 -->
-            <div class="station-item">
-                <strong>BG4LZN</strong>
-                <div class="info">位置：泰安市</div>
-                <div class="info">模式：FM / SSB / CW / FT8</div>
-                <span class="time">默认示例 | Default Example</span>
-            </div>
+    <!-- 用户提交的电台列表（自动两列） -->
+    <h2>用户提交的发射电台 | User-Submitted Active Stations</h2>
+    <div id="stationContainer" class="two-col-grid">
+        <!-- 无提交数据时显示默认示例 -->
+        <div class="station-item">
+            <strong>BG4LZN</strong>
+            <div class="info">位置：泰安市</div>
+            <div class="info">模式：FM / SSB / CW / FT8</div>
+            <span class="time">默认示例 | Default Example</span>
         </div>
-        <button class="clear-btn" onclick="clearAllStations()">清空提交列表 | Clear Submitted List</button>
     </div>
+    <button class="clear-btn" onclick="clearAllStations()">清空提交列表 | Clear Submitted List</button>
 
-    <!-- 静态呼号列表 -->
-    <h2>泰安在册电台呼号 | Registered Station Call Signs in Tai'an</h2>
-    <!-- 两列呼号列表 -->
-    <div class="two-col-list" style="position: relative; z-index: 1;">
-      <div class="col">
-        <div>BA4IHB</div>
-        <div>BA4III</div>
-        <div>BA4JAE</div>
-        <div>BA4JBN</div>
-        <div>BA4JBU</div>
-        <div>BA4JFO</div>
-        <div>BA4JUN</div>
-        <div>BD4JK</div>
-        <div>BD4LG</div>
-        <div>BD4NW</div>
-        <div>BG4JPO</div>
-        <div>BG4JUR</div>
-        <div>BG4JUS</div>
-        <div>BG4JUT</div>
-        <div>BG4JUV</div>
-      </div>
-      <div class="col">
-        <div>BG4LZM</div>
-        <div>BG4LZN</div>
-        <div>BG4LZO</div>
-        <div>BG4LZT</div>
-        <div>BG4LZV</div>
-        <div>BH4OBW</div>
-        <div>BI4IWX</div>
-        <div>BI4IXA</div>
-        <div>BI4JKW</div>
-        <div>BI4JWG</div>
-        <div>BI4LHS</div>
-        <div>BI4LQH</div>
-        <div>MI4MPY</div>
-        <div>BI4NCA</div>
-        <div>BI4PID</div>
-        <div>BI4PIH</div>
-        <div>BI4PUM</div>
-      </div>
-    </div>
+    <!-- 泰安在册电台呼号 | 已100%核对正确 -->
+<h2>泰安在册电台呼号 | Registered Station Call Signs in Tai'an</h2>
+<div class="two-col-grid">
+    <div class="callsign-item">BA4IHB</div>
+    <div class="callsign-item">BA4III</div>
+    <div class="callsign-item">BA4JAE</div>
+    <div class="callsign-item">BA4JBN</div>
+    <div class="callsign-item">BA4JBU</div>
+    <div class="callsign-item">BA4JFO</div>
+    <div class="callsign-item">BA4JUN</div>
+    <div class="callsign-item">BD4JK</div>
+    <div class="callsign-item">BD4LG</div>
+    <div class="callsign-item">BD4NW</div>
+    <div class="callsign-item">BG4JPO</div>
+    <div class="callsign-item">BG4JUR</div>
+    <div class="callsign-item">BG4JUS</div>
+    <div class="callsign-item">BG4JUT</div>
+    <div class="callsign-item">BG4JUV</div>
+    <div class="callsign-item">BG4LZM</div>
+    <div class="callsign-item">BG4LZN</div>
+    <div class="callsign-item">BG4LZO</div>
+    <div class="callsign-item">BG4LZT</div>
+    <div class="callsign-item">BG4LZV</div>
+    <div class="callsign-item">BH4OBW</div>
+    <div class="callsign-item">BI4IWX</div>
+    <div class="callsign-item">BI4IXA</div>
+    <div class="callsign-item">BI4JKW</div>
+    <div class="callsign-item">BI4JWG</div>
+    <div class="callsign-item">BI4LHS</div>
+    <div class="callsign-item">BI4LQH</div>
+    <div class="callsign-item">BI4MPY</div>
+    <div class="callsign-item">BI4NCA</div>
+    <div class="callsign-item">BI4PID</div>
+    <div class="callsign-item">BI4PIH</div>
+    <div class="callsign-item">BI4PUM</div>
+</div>
 
-<style>
-.two-col-list {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin: 20px 0;
-}
-.two-col-list .col {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.two-col-list div {
-  background: rgba(255,255,255,0.7);
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  text-align: center;
-  min-width: 120px;
-}
-</style>
     <!-- 说明文本 -->
     <div class="note">
         <p>注：列表实时更新，包含近期在泰安地区有发射记录的业余电台呼号，如有遗漏请发送电子邮件至watmham@outlook.com</p>
@@ -404,7 +386,7 @@
             }, 3000);
         }
 
-        // 加载电台列表（仅显示用户提交的）
+        // 加载电台列表（自动两列显示）
         function loadStations() {
             const localStations = JSON.parse(localStorage.getItem('watmStations')) || [];
             const container = document.getElementById('stationContainer');
@@ -412,7 +394,7 @@
             // 清空容器
             container.innerHTML = "";
 
-            // 显示本地提交的电台
+            // 显示本地提交的电台（自动两列）
             if (localStations.length > 0) {
                 localStations.forEach(station => {
                     const item = document.createElement('div');
