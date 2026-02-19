@@ -266,6 +266,10 @@
     </div>
 
     <script>
+        // ========== 核心配置（提前定义，确保全局可用） ==========
+        const GIST_ID = "c28a8e455ef8ecb94649e137d1eb2363";
+        const GITHUB_TOKEN = "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"; // 你的新Token
+
         // ========== 防护层：禁用右键/快捷键/复制 ==========
         (function(){
             // 禁用右键
@@ -299,10 +303,54 @@
             Object.defineProperty(console,"log",{get:()=>{devOpen = !0;return originLog;}});
         })();
 
+        // ========== 临时留言存储函数（全局定义，避免嵌套错误） ==========
+        async function saveTempMsgToGist(newMsg) {
+            try {
+                // 先读取现有临时留言，避免覆盖
+                let tempMessages = [];
+                const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    headers: {
+                        "Authorization": `Bearer ${GITHUB_TOKEN}`,
+                        "Accept": "application/vnd.github.v3+json"
+                    }
+                });
+                const gist = await res.json();
+                if (gist.files['temp_messages.json']) {
+                    tempMessages = JSON.parse(gist.files['temp_messages.json'].content || '[]');
+                }
+                
+                // 添加新留言并去重
+                tempMessages.unshift(newMsg);
+                const uniqueMessages = Array.from(new Set(tempMessages.map(m => JSON.stringify(m)))).map(s => JSON.parse(s));
+
+                // 写入临时文件
+                await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Authorization": `Bearer ${GITHUB_TOKEN}`,
+                        "Accept": "application/vnd.github.v3+json",
+                        "Content-Type": "application/json; charset=utf-8"
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            "temp_messages.json": {
+                                content: JSON.stringify(uniqueMessages, null, 2)
+                            }
+                        }
+                    })
+                });
+                console.log('临时留言已写入Gist');
+            } catch (e) {
+                console.log('Gist临时存储失败，降级到本地存储', e);
+                // 降级到本地存储（确保不丢数据）
+                let localTemp = JSON.parse(localStorage.getItem('WATM_TEMP_MESSAGES') || '[]');
+                localTemp.unshift(newMsg);
+                localStorage.setItem('WATM_TEMP_MESSAGES', JSON.stringify(localTemp));
+            }
+        }
+
         // ========== 核心功能：留言板（仅读取Gist，前端模拟提交） ==========
         (function(){
-            const GIST_ID = "c28a8e455ef8ecb94649e137d1eb2363";
-            
             // 页面加载时加载Gist里的真实留言
             window.onload = loadPublicMessages;
 
@@ -340,15 +388,11 @@
                     time: new Date().toLocaleString('zh-CN')
                 };
                 messages.unshift(newMsg);
-                
-                // ========== 新增这几行 ==========
-                // 把临时留言存到本地存储（后台可读取）
-                let tempMessages = JSON.parse(localStorage.getItem('tempWATM留言') || '[]');
-                tempMessages.unshift(newMsg);
-                localStorage.setItem('tempWATM留言', JSON.stringify(tempMessages));
-                // ========== 新增结束 ==========
 
-                // 3. 提交成功提示 + 刷新列表
+                // 3. 保存临时留言（Gist + 本地双存储，确保后台能读到）
+                await saveTempMsgToGist(newMsg);
+
+                // 4. 提交成功提示 + 刷新列表
                 showTip(tip, "留言提交成功！管理员会同步到公共列表 | Message submitted successfully!", "success-msg");
                 document.getElementById('nickname').value = "";
                 document.getElementById('message-content').value = "";
@@ -406,4 +450,3 @@
     </script>
 </body>
 </html>
-
