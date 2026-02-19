@@ -333,13 +333,20 @@
                     console.error("读取留言失败：", e);
                 }
 
-                // 2. 新增留言（仅前端显示，不写入Gist）
+                // 2. 新增留言（仅前端显示，不写入 Gist）
                 const newMsg = {
                     nickname: nickname,
                     content: content,
                     time: new Date().toLocaleString('zh-CN')
                 };
                 messages.unshift(newMsg);
+                
+                // ========== 新增这几行 ==========
+                // 把临时留言存到本地存储（后台可读取）
+                let tempMessages = JSON.parse(localStorage.getItem('tempWATM留言') || '[]');
+                tempMessages.unshift(newMsg);
+                localStorage.setItem('tempWATM留言', JSON.stringify(tempMessages));
+                // ========== 新增结束 ==========
 
                 // 3. 提交成功提示 + 刷新列表
                 showTip(tip, "留言提交成功！管理员会同步到公共列表 | Message submitted successfully!", "success-msg");
@@ -399,3 +406,4 @@
     </script>
 </body>
 </html>
+
