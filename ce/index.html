@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全屏背景图页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            /* 背景图核心样式 */
+            background: url("https://你的图片链接.jpg") no-repeat center center;
+            background-size: cover; /* 铺满屏幕，保持比例（可能裁剪） */
+            background-attachment: fixed; /* 固定背景，不随滚动移动 */
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面无其他内容，仅背景图 -->
+</body>
+</html>
