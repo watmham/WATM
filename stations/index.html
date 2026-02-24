@@ -275,36 +275,6 @@
         最近泰安有发射的电台
         <span class="en">Recently Active Stations in Tai'an</span>
     </h1>
-
-    <!-- 提交表单区域（未登录隐藏） -->
-    <div class="submit-form" id="submit-form">
-        <h2>提交你的电台信息 | Submit Your Station Info</h2>
-        <div class="form-group">
-            <label for="callsign">电台呼号 * | Station Call Sign *</label>
-            <input type="text" id="callsign" placeholder="例如：BG4LZN" required>
-        </div>
-        <div class="form-group">
-            <label for="location">位置 | Location</label>
-            <input type="text" id="location" placeholder="例如：泰安市泰山区">
-        </div>
-        <div class="form-group">
-            <label for="modes">通联模式 | Communication Modes</label>
-            <input type="text" id="modes" placeholder="例如：FM/SSB/CW/FT8">
-        </div>
-        <div class="form-group">
-            <label for="notes">备注 | Notes</label>
-            <textarea id="notes" rows="3" placeholder="可选：发射频率、设备、近期活动等"></textarea>
-        </div>
-        <button class="btn btn-primary" onclick="submitStation()">提交 | Submit</button>
-        <div class="message" id="submit-message"></div>
-    </div>
-    
-    <!-- 用户提交的电台列表（无数据时完全隐藏） -->
-    <h2 id="submittedTitle" style="display: none;">用户提交的发射电台 | User-Submitted Active Stations</h2>
-    <div id="stationContainer" class="two-col-grid"></div>
-    <button id="clearBtn" class="clear-btn" onclick="clearMyStations()">清空我的提交 | Clear My Submissions</button>
-
-    <!-- 静态在册呼号列表（100%核对正确+自动两列） -->
     <h2>泰安在册电台呼号 | Registered Station Call Signs in Tai'an</h2>
     <div class="two-col-grid">
         <div class="callsign-item">BA4IHB</div>
