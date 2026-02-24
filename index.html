@@ -240,214 +240,24 @@
         <p>提示：申请表为XLSX格式，填写后发送至 watmham@outlook.com</p>
         <p class="en">Tip: The application form is in XLSX format, send it to watmham@outlook.com after filling</p>
     </div>
-    <div class="message-board">
-        <h2>
-            留言板 | Message Board
-            <span class="en">欢迎交流通联经验、奖项问题</span>
-        </h2>
-        <div class="message-form">
-            <div class="form-item">
-                <label for="nickname">昵称 | Nickname *</label>
-                <input type="text" id="nickname" placeholder="请输入你的昵称（必填）">
-            </div>
-            <div class="form-item">
-                <label for="message-content">留言内容 | Message Content *</label>
-                <textarea id="message-content" placeholder="请输入你想交流的内容（必填）"></textarea>
-            </div>
-            <button class="submit-btn" onclick="submitMsg()">提交留言 | Submit</button>
-            <div id="message-tip" class="msg提示"></div>
-        </div>
-        <div class="message-list" id="message-list">
-            <div class="loading">加载留言中... | Loading messages...</div>
-        </div>
-    </div>
     <div class="copyright">
         © 2026 WATM BG4LZN | 联系邮箱：<a href="mailto:watmham@outlook.com">watmham@outlook.com</a>
     </div>
 
     <script>
-        // ========== 核心配置（提前定义，确保全局可用） ==========
-        const GIST_ID = "c28a8e455ef8ecb94649e137d1eb2363";
-        const GITHUB_TOKEN = "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"; // 你的新Token
-
-        // ========== 防护层：禁用右键/快捷键/复制 ==========
         (function(){
-            // 禁用右键
             document.addEventListener('contextmenu',e=>e.preventDefault());
-            // 禁用F12/Ctrl+Shift+I/J/Ctrl+U/Ctrl+S/Ctrl+C/V/X
             document.addEventListener('keydown',e=>{
                 if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'))||(e.ctrlKey&&e.key==='U')||(e.ctrlKey&&e.key==='s')||(e.ctrlKey&&e.key==='c')||(e.ctrlKey&&e.key==='v')||(e.ctrlKey&&e.key==='x')){
                     e.preventDefault();
                 }
             });
-            // 禁用复制/剪切/粘贴
             document.addEventListener('copy',e=>e.preventDefault());
             document.addEventListener('cut',e=>e.preventDefault());
             document.addEventListener('paste',e=>e.preventDefault());
         })();
-
-        // ========== 防护层：检测开发者工具 ==========
-        (function(){
-            let devOpen = !1;
-            setInterval(()=>{
-                let start = performance.now();
-                debugger;
-                let end = performance.now();
-                if(end - start > 100 && !devOpen){
-                    devOpen = !0;
-                    alert("检测到开发者工具已打开，页面功能可能异常！");
-                }
-            },1000);
-            // 检测console.log访问
-            let originLog = console.log;
-            Object.defineProperty(console,"log",{get:()=>{devOpen = !0;return originLog;}});
-        })();
-
-        // ========== 临时留言存储函数（全局定义，避免嵌套错误） ==========
-        async function saveTempMsgToGist(newMsg) {
-            try {
-                // 先读取现有临时留言，避免覆盖
-                let tempMessages = [];
-                const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-                    headers: {
-                        "Authorization": `Bearer ${GITHUB_TOKEN}`,
-                        "Accept": "application/vnd.github.v3+json"
-                    }
-                });
-                const gist = await res.json();
-                if (gist.files['temp_messages.json']) {
-                    tempMessages = JSON.parse(gist.files['temp_messages.json'].content || '[]');
-                }
-                
-                // 添加新留言并去重
-                tempMessages.unshift(newMsg);
-                const uniqueMessages = Array.from(new Set(tempMessages.map(m => JSON.stringify(m)))).map(s => JSON.parse(s));
-
-                // 写入临时文件
-                await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-                    method: "PATCH",
-                    headers: {
-                        "Authorization": `Bearer ${GITHUB_TOKEN}`,
-                        "Accept": "application/vnd.github.v3+json",
-                        "Content-Type": "application/json; charset=utf-8"
-                    },
-                    body: JSON.stringify({
-                        files: {
-                            "temp_messages.json": {
-                                content: JSON.stringify(uniqueMessages, null, 2)
-                            }
-                        }
-                    })
-                });
-                console.log('临时留言已写入Gist');
-            } catch (e) {
-                console.log('Gist临时存储失败，降级到本地存储', e);
-                // 降级到本地存储（确保不丢数据）
-                let localTemp = JSON.parse(localStorage.getItem('WATM_TEMP_MESSAGES') || '[]');
-                localTemp.unshift(newMsg);
-                localStorage.setItem('WATM_TEMP_MESSAGES', JSON.stringify(localTemp));
-            }
-        }
-
-        // ========== 核心功能：留言板（仅读取Gist，前端模拟提交） ==========
-        (function(){
-            // 页面加载时加载Gist里的真实留言
-            window.onload = loadPublicMessages;
-
-            // 对外暴露的提交函数（和按钮onclick对应）
-            window.submitMsg = async function() {
-                const nickname = document.getElementById('nickname').value.trim();
-                const content = document.getElementById('message-content').value.trim();
-                const tip = document.getElementById('message-tip');
-
-                // 验证必填项
-                if (!nickname) {
-                    showTip(tip, "请输入昵称/呼号！| Please enter nickname/call sign!", "error-msg");
-                    return;
-                }
-                if (!content) {
-                    showTip(tip, "请输入留言内容！| Please enter message content!", "error-msg");
-                    return;
-                }
-
-                // 1. 读取Gist里的真实留言
-                let messages = [];
-                try {
-                    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-                    const gist = await res.json();
-                    const fileKey = Object.keys(gist.files)[0];
-                    messages = JSON.parse(gist.files[fileKey].content || "[]");
-                } catch (e) {
-                    console.error("读取留言失败：", e);
-                }
-
-                // 2. 新增留言（仅前端显示，不写入 Gist）
-                const newMsg = {
-                    nickname: nickname,
-                    content: content,
-                    time: new Date().toLocaleString('zh-CN')
-                };
-                messages.unshift(newMsg);
-
-                // 3. 保存临时留言（Gist + 本地双存储，确保后台能读到）
-                await saveTempMsgToGist(newMsg);
-
-                // 4. 提交成功提示 + 刷新列表
-                showTip(tip, "留言提交成功！管理员会同步到公共列表 | Message submitted successfully!", "success-msg");
-                document.getElementById('nickname').value = "";
-                document.getElementById('message-content').value = "";
-                
-                // 前端临时显示新留言（刷新后消失，需手动同步到Gist）
-                renderMessages(messages);
-                setTimeout(() => tip.style.display = "none", 3000);
-            };
-
-            // 加载Gist里的真实留言
-            async function loadPublicMessages() {
-                const list = document.getElementById('message-list');
-                list.innerHTML = '<div class="loading">加载留言中... | Loading messages...</div>';
-
-                try {
-                    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-                    const gist = await res.json();
-                    const fileKey = Object.keys(gist.files)[0];
-                    let messages = JSON.parse(gist.files[fileKey].content || "[]");
-                    renderMessages(messages);
-                } catch (error) {
-                    console.error("加载失败：", error);
-                    list.innerHTML = '<div class="empty-tip">留言加载失败 | Failed to load messages</div>';
-                }
-            }
-
-            // 渲染留言列表
-            function renderMessages(messages) {
-                const list = document.getElementById('message-list');
-                list.innerHTML = "";
-                
-                if (messages.length === 0) {
-                    list.innerHTML = '<div class="empty-tip">暂无留言，欢迎第一个留言！| No messages yet, be the first to leave a message!</div>';
-                    return;
-                }
-
-                messages.forEach(msg => {
-                    const item = document.createElement('div');
-                    item.className = 'message-item';
-                    item.innerHTML = `
-                        <div class="nickname">${msg.nickname}</div>
-                        <div class="content">${msg.content}</div>
-                        <span class="time">${msg.time}</span>
-                    `;
-                    list.appendChild(item);
-                });
-            }
-
-            // 显示提示消息
-            function showTip(element, text, type) {
-                element.textContent = text;
-                element.className = `msg提示 ${type}`;
-            }
-        })();
     </script>
 </body>
 </html>
+
 
